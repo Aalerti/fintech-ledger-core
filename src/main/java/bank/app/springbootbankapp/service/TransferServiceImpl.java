@@ -23,7 +23,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Transactional
     @Override
-    public void transfer(long fromId, long toId, BigDecimal amount) {
+    public Transaction transfer(long fromId, long toId, BigDecimal amount) {
 
         if (fromId == toId) {
             throw new IllegalArgumentException("Transfer to the same account is not allowed");
@@ -61,6 +61,6 @@ public class TransferServiceImpl implements TransferService {
         transaction.setAccountFrom(accountFrom);
         transaction.setAccountTo(accountTo);
 
-        transactionRepository.save(transaction);
+        return transactionRepository.save(transaction);
     }
 }
