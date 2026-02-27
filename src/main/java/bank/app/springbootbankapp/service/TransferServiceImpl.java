@@ -1,9 +1,11 @@
 package bank.app.springbootbankapp.service;
 
+import bank.app.springbootbankapp.dto.TransferResponseDto;
 import bank.app.springbootbankapp.entity.Account;
 import bank.app.springbootbankapp.entity.Transaction;
 import bank.app.springbootbankapp.exception.AccountNotFoundException;
 import bank.app.springbootbankapp.exception.AccountsHaveDifferentCurrency;
+import bank.app.springbootbankapp.mapper.TransferMapper;
 import bank.app.springbootbankapp.repository.AccountRepository;
 import bank.app.springbootbankapp.repository.TransactionRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +21,12 @@ public class TransferServiceImpl implements TransferService {
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final TransferMapper transferMapper;
 
 
     @Transactional
     @Override
-    public Transaction transfer(long fromId, long toId, BigDecimal amount) {
+    public TransferResponseDto transfer(long fromId, long toId, BigDecimal amount) {
 
         if (fromId == toId) {
             throw new IllegalArgumentException("Transfer to the same account is not allowed");
@@ -61,6 +64,8 @@ public class TransferServiceImpl implements TransferService {
         transaction.setAccountFrom(accountFrom);
         transaction.setAccountTo(accountTo);
 
-        return transactionRepository.save(transaction);
+        transaction = transactionRepository.save(transaction);
+
+        return transferMapper.toResponseDto(transaction);
     }
 }
