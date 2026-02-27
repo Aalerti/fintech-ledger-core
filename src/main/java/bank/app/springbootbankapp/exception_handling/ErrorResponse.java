@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountIncorrectData {
-        private String info;
+public class ErrorResponse {
+    private String message;
 }

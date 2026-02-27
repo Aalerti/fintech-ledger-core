@@ -1,6 +1,7 @@
 package bank.app.springbootbankapp.exception_handling;
 
 import bank.app.springbootbankapp.exception.AccountNotFoundException;
+import bank.app.springbootbankapp.exception.AccountsHaveDifferentCurrency;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,19 +15,27 @@ import java.util.Map;
 public class TransferGlobalExceptionHandler {
 
     @ExceptionHandler(AccountNotFoundException.class)
-    public ResponseEntity<AccountIncorrectData> handleAccountNotFoundException(AccountNotFoundException e) {
-        AccountIncorrectData accountIncorrectData = new AccountIncorrectData();
-        accountIncorrectData.setInfo(e.getMessage());
+    public ResponseEntity<ErrorResponse> handleAccountNotFoundException(AccountNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(accountIncorrectData);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<TransferIncorrectData> handleIllegalArgumentException(IllegalArgumentException e) {
-        TransferIncorrectData transferIncorrectData = new TransferIncorrectData();
-        transferIncorrectData.setInfo(e.getMessage());
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
+        ErrorResponse transferIncorrectData = new ErrorResponse();
+        transferIncorrectData.setMessage(e.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferIncorrectData);
+    }
+
+    @ExceptionHandler(AccountsHaveDifferentCurrency.class)
+    public ResponseEntity<ErrorResponse> handleAccountsHaveDifferentCurrency(AccountsHaveDifferentCurrency e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler
@@ -36,5 +45,12 @@ public class TransferGlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage())
         );
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage("Internal Server Error");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
