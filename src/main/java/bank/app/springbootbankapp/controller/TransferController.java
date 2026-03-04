@@ -20,9 +20,7 @@ public class TransferController {
 
     @PostMapping("/transfers")
     public ResponseEntity<TransferResponseDto> transfers(@Valid @RequestBody TransferRequestDto transferRequestDto) {
-        TransferResponseDto responseDto = transferService.transfer(transferRequestDto.getFromId(),
-                transferRequestDto.getToId(),
-                transferRequestDto.getAmount());
+        TransferResponseDto responseDto = transferService.transfer(transferRequestDto);
 
         return ResponseEntity.ok(responseDto);
     }
