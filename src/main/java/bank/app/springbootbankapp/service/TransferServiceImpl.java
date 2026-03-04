@@ -1,5 +1,6 @@
 package bank.app.springbootbankapp.service;
 
+import bank.app.springbootbankapp.dto.TransferRequestDto;
 import bank.app.springbootbankapp.dto.TransferResponseDto;
 import bank.app.springbootbankapp.entity.Account;
 import bank.app.springbootbankapp.entity.Transaction;
@@ -26,7 +27,10 @@ public class TransferServiceImpl implements TransferService {
 
     @Transactional
     @Override
-    public TransferResponseDto transfer(long fromId, long toId, BigDecimal amount) {
+    public TransferResponseDto transfer(TransferRequestDto  transferRequestDto) {
+        long fromId = transferRequestDto.getFromId();
+        long toId = transferRequestDto.getToId();
+        BigDecimal amount = transferRequestDto.getAmount();
 
         if (fromId == toId) {
             throw new IllegalArgumentException("Transfer to the same account is not allowed");
