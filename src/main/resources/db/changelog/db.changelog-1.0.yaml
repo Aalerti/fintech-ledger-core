@@ -1,0 +1,170 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01-create-banks-table
+      author: max
+      changes:
+        - createSequence:
+            sequenceName: banks_seq
+            incrementBy: 50
+        - createTable:
+            tableName: banks
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 02-create-users-table
+      author: max
+      changes:
+        - createSequence:
+            sequenceName: users_seq
+            incrementBy: 50
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password_hash
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_system
+                  type: bool
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 03-create-accounts-table
+      author: max
+      changes:
+        - createSequence:
+            sequenceName: accounts_seq
+            incrementBy: 50
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: balance
+                  type: DECIMAL(15,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: version
+                  type: int
+                  defaultValueNumeric: 0
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_accounts_users
+                    references: users(id)
+              - column:
+                  name: bank_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_accounts_banks
+                    references: banks(id)
+
+  - changeSet:
+
+      id: 04-create-transactions-table
+      author: max
+      changes:
+        - createSequence:
+            sequenceName: transactions_seq
+            incrementBy: 50
+        - createTable:
+            tableName: transactions
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: amount
+                  type: DECIMAL(15,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: currency
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_from_transfer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transactions_accounts_from
+                    references: accounts(id)
+              - column:
+                  name: account_to_transfer_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_transactions_accounts_to
+                    references: accounts(id)
+
+
