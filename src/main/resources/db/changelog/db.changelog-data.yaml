@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: 05-insert-initial-data
+      author: max
+      changes:
+        # 1. Создаем банк
+        - insert:
+            tableName: banks
+            columns:
+              - column: { name: id, valueComputed: "nextval('banks_seq')" }
+              - column: { name: name, value: "Fintech Central Bank" }
+
+        # 2. Создаем пользователей
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, valueComputed: "nextval('users_seq')" }
+              - column: { name: username, value: "alice_dev" }
+              - column: { name: email, value: "alice@example.com" }
+              - column: { name: password_hash, value: "dummy_hash_1" }
+              - column: { name: role, value: "USER" }
+              - column: { name: is_system, valueBoolean: false }
+
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, valueComputed: "nextval('users_seq')" }
+              - column: { name: username, value: "bob_dev" }
+              - column: { name: email, value: "bob@example.com" }
+              - column: { name: password_hash, value: "dummy_hash_2" }
+              - column: { name: role, value: "USER" }
+              - column: { name: is_system, valueBoolean: false }
+
+        # 3. Создаем счета (Связываем через подзапросы!)
+        - insert:
+            tableName: accounts
+            columns:
+              - column: { name: id, valueComputed: "nextval('accounts_seq')" }
+              # Ищем ID пользователя по его уникальному username
+              - column: { name: user_id, valueComputed: "(SELECT id FROM users WHERE username = 'alice_dev')" }
+              # Ищем ID банка по его названию
+              - column: { name: bank_id, valueComputed: "(SELECT id FROM banks WHERE name = 'Fintech Central Bank')" }
+              - column: { name: balance, valueNumeric: 5000.00 }
+              - column: { name: currency, value: "DOLLAR" }
+              - column: { name: number, value: "ACC-1001" }
+              - column: { name: version, valueNumeric: 0 } # Строго 0 для Optimistic Lock
+
+        - insert:
+            tableName: accounts
+            columns:
+              - column: { name: id, valueComputed: "nextval('accounts_seq')" }
+              - column: { name: user_id, valueComputed: "(SELECT id FROM users WHERE username = 'bob_dev')" }
+              - column: { name: bank_id, valueComputed: "(SELECT id FROM banks WHERE name = 'Fintech Central Bank')" }
+              - column: { name: balance, valueNumeric: 1000.00 }
+              - column: { name: currency, value: "DOLLAR" }
+              - column: { name: number, value: "ACC-1002" }
+              - column: { name: version, valueNumeric: 0 }
