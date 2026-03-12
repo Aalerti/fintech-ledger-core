@@ -9,5 +9,5 @@ import java.math.BigDecimal;
 
 public interface TransferService {
 
-    TransferResponseDto transfer(TransferRequestDto transferRequestDto);
+    TransferResponseDto transfer(TransferRequestDto transferRequestDto, Account currentUser);
 }
