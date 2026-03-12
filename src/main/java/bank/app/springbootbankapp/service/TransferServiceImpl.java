@@ -27,7 +27,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Transactional
     @Override
-    public TransferResponseDto transfer(TransferRequestDto  transferRequestDto) {
+    public TransferResponseDto transfer(TransferRequestDto  transferRequestDto, Account currentUser) {
         long fromId = transferRequestDto.getFromId();
         long toId = transferRequestDto.getToId();
         BigDecimal amount = transferRequestDto.getAmount();
@@ -43,6 +43,10 @@ public class TransferServiceImpl implements TransferService {
         Account accountFrom = accountRepository
                 .findById(fromId)
                 .orElseThrow(() -> new AccountNotFoundException("Account with" + fromId + " not found"));
+
+        if (accountFrom.getUser().getId() != currentUser.getId()) {
+            throw new IllegalArgumentException("You can't transfer money from someone else's account!");
+        }
 
         Account accountTo = accountRepository
                 .findById(toId)
