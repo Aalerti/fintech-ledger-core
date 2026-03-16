@@ -2,12 +2,10 @@ package bank.app.springbootbankapp.service;
 
 import bank.app.springbootbankapp.dto.TransferRequestDto;
 import bank.app.springbootbankapp.dto.TransferResponseDto;
-import bank.app.springbootbankapp.entity.Account;
-import bank.app.springbootbankapp.entity.Transaction;
+import bank.app.springbootbankapp.entity.User;
 
-import java.math.BigDecimal;
 
 public interface TransferService {
 
-    TransferResponseDto transfer(TransferRequestDto transferRequestDto, Account currentUser);
+    TransferResponseDto transfer(TransferRequestDto transferRequestDto, User currentUser);
 }

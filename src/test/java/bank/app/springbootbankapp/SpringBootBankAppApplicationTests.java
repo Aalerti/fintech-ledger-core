@@ -2,13 +2,16 @@ package bank.app.springbootbankapp;
 
 import bank.app.springbootbankapp.dto.TransferRequestDto;
 import bank.app.springbootbankapp.entity.Account;
+import bank.app.springbootbankapp.entity.User;
 import bank.app.springbootbankapp.exception.AccountNotFoundException;
 import bank.app.springbootbankapp.repository.AccountRepository;
+import bank.app.springbootbankapp.repository.UserRepository;
 import bank.app.springbootbankapp.service.TransferService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.math.BigDecimal;
 import java.util.concurrent.CountDownLatch;
@@ -28,11 +31,24 @@ class SpringBootBankAppApplicationTests {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Test
     void testOptimisticLockingOnConcurrentTransfers() throws InterruptedException {
+        User currUser = userRepository.findByUsername("alice_dev")
+                .orElseThrow(() -> new UsernameNotFoundException("User alice_dev don't exist"));
+
+        Account accountBefore = accountRepository.findByNumber("ACC-1001")
+                .orElseThrow(() -> new AccountNotFoundException("Account ACC-1001 don't exist"));
+
+        Account accountTo = accountRepository.findByNumber("ACC-1002")
+                .orElseThrow(() -> new AccountNotFoundException("Account ACC-1002 don't exist"));
+
+
         TransferRequestDto request =  new TransferRequestDto();
-        request.setFromId(1l);
-        request.setToId(2l);
+        request.setFromId(accountBefore.getId());
+        request.setToId(accountTo.getId());
         request.setAmount(new BigDecimal("100.00"));
 
         int threadCount = 10;
@@ -45,9 +61,8 @@ class SpringBootBankAppApplicationTests {
         AtomicInteger  successCount = new AtomicInteger(0);
         AtomicInteger  failureCount = new AtomicInteger(0);
 
-        Account accountBefore = accountRepository.findById(1l).orElseThrow(
-                () -> new AccountNotFoundException("Account don't exist"));
         BigDecimal balanceBefore = accountBefore.getBalance();
+
 
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
@@ -56,7 +71,7 @@ class SpringBootBankAppApplicationTests {
                     startLatch.await();
 
 
-                    transferService.transfer(request);
+                    transferService.transfer(request, currUser);
                     successCount.incrementAndGet();
 
                 } catch (ObjectOptimisticLockingFailureException e) {
@@ -74,8 +89,8 @@ class SpringBootBankAppApplicationTests {
         downLatch.await();
 
 
-        Account accountAfter = accountRepository.findById(1l).orElseThrow(
-                () -> new AccountNotFoundException("Account don't exist"));
+        Account accountAfter = accountRepository.findByNumber("ACC-1001")
+                .orElseThrow(() -> new AccountNotFoundException("Account don't exist"));
         BigDecimal balanceAfter = accountAfter.getBalance();
 
         System.out.println("Успешных транзакций: " + successCount.get());
@@ -88,8 +103,7 @@ class SpringBootBankAppApplicationTests {
 
         BigDecimal expectedBalance = balanceBefore.subtract(new BigDecimal("100.00").multiply(new BigDecimal(successCount.get())));
         assertEquals(0, expectedBalance.compareTo(balanceAfter),
-                "Баланс в бд не совпадает с расчетным, произошло двойное списание0");
-
+                "Баланс в бд не совпадает с расчетным, произошло двойное списание");
 
     }
 
