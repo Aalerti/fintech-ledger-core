@@ -4,6 +4,7 @@ import bank.app.springbootbankapp.dto.TransferRequestDto;
 import bank.app.springbootbankapp.dto.TransferResponseDto;
 import bank.app.springbootbankapp.entity.Account;
 import bank.app.springbootbankapp.entity.Transaction;
+import bank.app.springbootbankapp.entity.User;
 import bank.app.springbootbankapp.exception.AccountNotFoundException;
 import bank.app.springbootbankapp.exception.AccountsHaveDifferentCurrency;
 import bank.app.springbootbankapp.mapper.TransferMapper;
@@ -27,7 +28,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Transactional
     @Override
-    public TransferResponseDto transfer(TransferRequestDto  transferRequestDto, Account currentUser) {
+    public TransferResponseDto transfer(TransferRequestDto  transferRequestDto, User currentUser) {
         long fromId = transferRequestDto.getFromId();
         long toId = transferRequestDto.getToId();
         BigDecimal amount = transferRequestDto.getAmount();
