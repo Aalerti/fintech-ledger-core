@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-class SpringBootBankAppApplicationTests {
+class SpringBootBankAppApplicationTests extends AbstractTestcontainerBase {
 
     @Autowired
     TransferService transferService;
