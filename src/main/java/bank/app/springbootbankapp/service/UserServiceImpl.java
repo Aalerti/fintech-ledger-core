@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         User user = findByUsername(loginRequestDto.getUsername());
+
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPasswordHash())) {
             throw new BadCredentialsException("Incorrect password");
         }
