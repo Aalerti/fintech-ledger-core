@@ -166,5 +166,12 @@ databaseChangeLog:
                     nullable: false
                     foreignKeyName: fk_transactions_accounts_to
                     references: accounts(id)
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+
 
 
