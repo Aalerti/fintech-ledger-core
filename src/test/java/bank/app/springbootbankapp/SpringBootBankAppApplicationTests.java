@@ -70,8 +70,8 @@ class SpringBootBankAppApplicationTests extends AbstractTestcontainerBase {
                     readyThreads.countDown();
                     startLatch.await();
 
-
-                    transferService.transfer(request, currUser);
+                    String uniqueKey = java.util.UUID.randomUUID().toString();
+                    transferService.transfer(request, currUser, uniqueKey);
                     successCount.incrementAndGet();
 
                 } catch (ObjectOptimisticLockingFailureException e) {

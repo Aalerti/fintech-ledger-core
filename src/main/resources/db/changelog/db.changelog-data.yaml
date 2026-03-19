@@ -17,7 +17,7 @@ databaseChangeLog:
               - column: { name: id, valueComputed: "nextval('users_seq')" }
               - column: { name: username, value: "alice_dev" }
               - column: { name: email, value: "alice@example.com" }
-              - column: { name: password_hash, value: "$2a$10$RAt.23TjoEVZ/nGRasXCkulV.YV5HaVajxGNh9/FqaPGJD0y8uxh6" }
+              - column: { name: password_hash, value: "$2a$10$oES0quIiOmo/9X9JGfPvUeBjQzoUDzrbv1fEPROIrqh11ajSBKD.y" }
               - column: { name: role, value: "USER" }
               - column: { name: is_system, valueBoolean: false }
 
@@ -27,7 +27,7 @@ databaseChangeLog:
               - column: { name: id, valueComputed: "nextval('users_seq')" }
               - column: { name: username, value: "bob_dev" }
               - column: { name: email, value: "bob@example.com" }
-              - column: { name: password_hash, value: "$2a$10$RAt.23TjoEVZ/nGRasXCkulV.YV5HaVajxGNh9/FqaPGJD0y8uxh6" }
+              - column: { name: password_hash, value: "$2a$10$oES0quIiOmo/9X9JGfPvUeBjQzoUDzrbv1fEPROIrqh11ajSBKD.y" }
               - column: { name: role, value: "USER" }
               - column: { name: is_system, valueBoolean: false }
 
