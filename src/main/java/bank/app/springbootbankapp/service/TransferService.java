@@ -7,5 +7,5 @@ import bank.app.springbootbankapp.entity.User;
 
 public interface TransferService {
 
-    TransferResponseDto transfer(TransferRequestDto transferRequestDto, User currentUser);
+    TransferResponseDto transfer(TransferRequestDto transferRequestDto, User currentUser, String idempotencyKey);
 }
